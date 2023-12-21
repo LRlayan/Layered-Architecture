@@ -2,6 +2,11 @@ create database company;
 
 use company;
 
+select * from item;
+select * from OrderDetails;
+
+select c.id , c.name , o.oid , od.itemCode , od.qty from customer c join Orders O on c.id = O.customerID join OrderDetails OD on O.oid = OD.oid;
+
 DROP TABLE IF EXISTS `Customer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;

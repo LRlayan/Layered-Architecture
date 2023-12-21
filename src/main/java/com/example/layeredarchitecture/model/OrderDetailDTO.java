@@ -27,6 +27,12 @@ public class OrderDetailDTO implements Serializable {
         this.unitPrice = unitPrice;
     }
 
+    public OrderDetailDTO(String oid, String itemCode, int qty) {
+        this.oid = oid;
+        this.itemCode = itemCode;
+        this.qty = qty;
+    }
+
     public String getOid() {
         return oid;
     }

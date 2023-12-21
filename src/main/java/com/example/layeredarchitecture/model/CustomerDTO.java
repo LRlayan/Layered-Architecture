@@ -17,6 +17,11 @@ public class CustomerDTO implements Serializable {
         this.address = address;
     }
 
+    public CustomerDTO(String customerId, String name) {
+        this.id = customerId;
+        this.name = name;
+    }
+
     public String getId() {
         return id;
     }
