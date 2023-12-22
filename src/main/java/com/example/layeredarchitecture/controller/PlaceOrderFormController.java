@@ -1,5 +1,6 @@
 package com.example.layeredarchitecture.controller;
 
+import com.example.layeredarchitecture.bo.PlaceOrderBoImpl;
 import com.example.layeredarchitecture.dao.custom.CustomerDAO;
 import com.example.layeredarchitecture.dao.custom.ItemDAO;
 import com.example.layeredarchitecture.dao.custom.OrderDAO;
@@ -360,78 +361,88 @@ public class PlaceOrderFormController {
 
 
     public boolean saveOrder(String orderId, LocalDate orderDate, String customerId, List<OrderDetailDTO> orderDetails) {
-        /*Transaction*/
-        Connection connection = null;
+
+        PlaceOrderBoImpl placeOrder = new PlaceOrderBoImpl();
         try {
-            connection=DBConnection.getDbConnection().getConnection();
-
-
-            //Check order id already exist or not
-
-
-            boolean b1 = orderDAO.exist(orderId);
-            /*if order id already exist*/
-            if (b1) {
-                return false;
-            }
-
-
-            connection.setAutoCommit(false);
-
-
-            //Save the Order to the order table
-            boolean b2 = orderDAO.save(new OrderDTO(orderId, orderDate, customerId));
-
-
-            if (!b2) {
-                connection.rollback();
-                connection.setAutoCommit(true);
-                return false;
-            }
-
-
-
-
-            // add data to the Order Details table
-
-
-            for (OrderDetailDTO detail : orderDetails) {
-                boolean b3 = orderDetailsDAO.save(detail);
-                if (!b3) {
-                    connection.rollback();
-                    connection.setAutoCommit(true);
-                    return false;
-                }
-
-
-                //Search & Update Item
-                ItemDTO item = findItem(detail.getItemCode());
-                item.setQtyOnHand(item.getQtyOnHand() - detail.getQty());
-
-
-                //update item
-                boolean b = itemDAO.update(new ItemDTO(item.getCode(), item.getDescription(), item.getUnitPrice(), item.getQtyOnHand()));
-
-
-                if (!b) {
-                    connection.rollback();
-                    connection.setAutoCommit(true);
-                    return false;
-                }
-            }
-
-
-            connection.commit();
-            connection.setAutoCommit(true);
-            return true;
-
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            return placeOrder.placeOrder(orderId,orderDate,customerId,orderDetails);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return false;
+
+        //        /*Transaction*/
+//        Connection connection = null;
+//        try {
+//            connection=DBConnection.getDbConnection().getConnection();
+//
+//
+//            //Check order id already exist or not
+//
+//
+//            boolean b1 = orderDAO.exist(orderId);
+//            /*if order id already exist*/
+//            if (b1) {
+//                return false;
+//            }
+//
+//
+//            connection.setAutoCommit(false);
+//
+//
+//            //Save the Order to the order table
+//            boolean b2 = orderDAO.save(new OrderDTO(orderId, orderDate, customerId));
+//
+//
+//            if (!b2) {
+//                connection.rollback();
+//                connection.setAutoCommit(true);
+//                return false;
+//            }
+//
+//
+//
+//
+//            // add data to the Order Details table
+//
+//
+//            for (OrderDetailDTO detail : orderDetails) {
+//                boolean b3 = orderDetailsDAO.save(detail);
+//                if (!b3) {
+//                    connection.rollback();
+//                    connection.setAutoCommit(true);
+//                    return false;
+//                }
+//
+//
+//                //Search & Update Item
+//                ItemDTO item = findItem(detail.getItemCode());
+//                item.setQtyOnHand(item.getQtyOnHand() - detail.getQty());
+//
+//
+//                //update item
+//                boolean b = itemDAO.update(new ItemDTO(item.getCode(), item.getDescription(), item.getUnitPrice(), item.getQtyOnHand()));
+//
+//
+//                if (!b) {
+//                    connection.rollback();
+//                    connection.setAutoCommit(true);
+//                    return false;
+//                }
+//            }
+//
+//
+//            connection.commit();
+//            connection.setAutoCommit(true);
+//            return true;
+//
+//
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        return false;
     }
 
 
