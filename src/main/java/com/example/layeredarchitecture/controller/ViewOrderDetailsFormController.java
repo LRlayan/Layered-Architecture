@@ -1,7 +1,8 @@
 package com.example.layeredarchitecture.controller;
 
-import com.example.layeredarchitecture.dao.custom.QueryDao;
-import com.example.layeredarchitecture.dao.custom.impl.QueryDaoImpl;
+import com.example.layeredarchitecture.bo.custom.BoFactory;
+import com.example.layeredarchitecture.bo.custom.QuaryBo;
+import com.example.layeredarchitecture.bo.custom.boImpl.QuaryBoImpl;
 import com.example.layeredarchitecture.model.ViewOrderDTO;
 import com.example.layeredarchitecture.view.tdm.ViewOrderTm;
 import javafx.collections.FXCollections;
@@ -37,7 +38,8 @@ public class ViewOrderDetailsFormController implements Initializable {
     @FXML
     private TableView<ViewOrderTm> viewOrderDetailTable;
 
-    QueryDao queryDao = new QueryDaoImpl();
+    //QueryDao queryDao = new QueryDaoImpl();
+    QuaryBo quaryBo = (QuaryBo) BoFactory.getBoFactory().getDao(BoFactory.DaoTypes.QUERY);
 
     ObservableList<ViewOrderTm> obList = FXCollections.observableArrayList();
     @Override
@@ -62,7 +64,7 @@ public class ViewOrderDetailsFormController implements Initializable {
     }
     public void setOrderDetails() throws SQLException, ClassNotFoundException {
         try{
-            List<ViewOrderDTO> viewOrderDetails = queryDao.viewOrderDetail();
+            List<ViewOrderDTO> viewOrderDetails = quaryBo.viewOrderDetail();
             for (ViewOrderDTO dto : viewOrderDetails) {
                 obList.add(new ViewOrderTm(
                         dto.getCustomerId(),

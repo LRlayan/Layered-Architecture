@@ -1,7 +1,8 @@
 package com.example.layeredarchitecture.controller;
 
-import com.example.layeredarchitecture.dao.custom.ItemDAO;
-import com.example.layeredarchitecture.dao.custom.impl.ItemDAOImpl;
+import com.example.layeredarchitecture.bo.custom.BoFactory;
+import com.example.layeredarchitecture.bo.custom.ItemBO;
+import com.example.layeredarchitecture.bo.custom.boImpl.ItemBoImpl;
 import com.example.layeredarchitecture.model.ItemDTO;
 import com.example.layeredarchitecture.view.tdm.ItemTM;
 import com.jfoenix.controls.JFXButton;
@@ -37,6 +38,9 @@ public class ManageItemsFormController {
     public TextField txtUnitPrice;
     public JFXButton btnAddNewItem;
 
+   // ItemDAO itemDAO= new ItemDAOImpl();
+    ItemBO itemBO = (ItemBO) BoFactory.getBoFactory().getDao(BoFactory.DaoTypes.ITEM);
+
     public void initialize() {
         tblItems.getColumns().get(0).setCellValueFactory(new PropertyValueFactory<>("code"));
         tblItems.getColumns().get(1).setCellValueFactory(new PropertyValueFactory<>("description"));
@@ -71,8 +75,8 @@ public class ManageItemsFormController {
         tblItems.getItems().clear();
         try {
             /*Get all items*/
-            ItemDAO itemDAO= new ItemDAOImpl();
-            ArrayList<ItemDTO> getAllItems=itemDAO.getAll();
+           // ItemDAO itemDAO= new ItemDAOImpl();
+            ArrayList<ItemDTO> getAllItems = itemBO.getAllItems();
             for (ItemDTO dto:getAllItems){
                 tblItems.getItems().add(new ItemTM(dto.getCode(),dto.getDescription(),dto.getUnitPrice(),dto.getQtyOnHand()));
 
@@ -133,8 +137,8 @@ public class ManageItemsFormController {
             if (!existItem(code)) {
                 new Alert(Alert.AlertType.ERROR, "There is no such item associated with the id " + code).show();
             }
-            ItemDAO itemDAO = new ItemDAOImpl();
-            boolean isDelete =itemDAO.delete(code);
+            //ItemDAO itemDAO = new ItemDAOImpl();
+            boolean isDelete = itemBO.deleteItem(code);
             if (isDelete) {
 
                 tblItems.getItems().remove(tblItems.getSelectionModel().getSelectedItem());
@@ -175,8 +179,8 @@ public class ManageItemsFormController {
                 if (existItem(code)) {
                     new Alert(Alert.AlertType.ERROR, code + " already exists").show();
                 }
-                ItemDAOImpl itemDAO  = new ItemDAOImpl();
-                boolean b = itemDAO.save(new ItemDTO(code, description, unitPrice, qtyOnHand));
+              //  ItemDAOImpl itemDAO  = new ItemDAOImpl();
+                boolean b = itemBO.saveItem(new ItemDTO(code, description, unitPrice, qtyOnHand));
                 if (b) {
                     tblItems.getItems().add(new ItemTM(code, description, unitPrice, qtyOnHand));
                 }
@@ -196,8 +200,8 @@ public class ManageItemsFormController {
                 /*Update Item*/
                 ItemDTO itemDTO = new ItemDTO(code, description, unitPrice, qtyOnHand);
 
-                ItemDAO itemDAO  = new ItemDAOImpl();
-                boolean updated = itemDAO.update(itemDTO);
+                //ItemDAO itemDAO  = new ItemDAOImpl();
+                boolean updated = itemBO.updateItem(itemDTO);
                 if (updated) {
                     ItemTM selectedItem = tblItems.getSelectionModel().getSelectedItem();
                     selectedItem.setDescription(description);
@@ -215,14 +219,14 @@ public class ManageItemsFormController {
         btnAddNewItem.fire();
     }
     public boolean existItem(String code) throws SQLException, ClassNotFoundException {
-        ItemDAO itemDAO=new ItemDAOImpl();
-        return itemDAO.exist(code);
+        //ItemDAO itemDAO=new ItemDAOImpl();
+        return itemBO.existItem(code);
     }
 
     private String generateNewId() {
         try {
-            ItemDAO itemDAO = new ItemDAOImpl();
-            String newId = itemDAO.generateNewId();
+          //  ItemDAO itemDAO = new ItemDAOImpl();
+            String newId = itemBO.generateNewItemId();
             return newId;
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, e.getMessage()).show();

@@ -1,7 +1,8 @@
 package com.example.layeredarchitecture.controller;
 
-import com.example.layeredarchitecture.dao.custom.CustomerDAO;
-import com.example.layeredarchitecture.dao.custom.impl.CustomerDAOImpl;
+import com.example.layeredarchitecture.bo.custom.BoFactory;
+import com.example.layeredarchitecture.bo.custom.CustomerBO;
+import com.example.layeredarchitecture.bo.custom.boImpl.CustomerBoImpl;
 import com.example.layeredarchitecture.model.CustomerDTO;
 import com.example.layeredarchitecture.view.tdm.CustomerTM;
 import com.jfoenix.controls.JFXButton;
@@ -35,8 +36,11 @@ public class ManageCustomersFormController {
     public TextField txtCustomerAddress;
     public TableView<CustomerTM> tblCustomers;
     public JFXButton btnAddNewCustomer;
-    CustomerDAO customerDAO=new CustomerDAOImpl();
-    public void initialize() {
+
+//    CustomerDAO customerDAO=new CustomerDAOImpl();
+    CustomerBO customerBO = (CustomerBO) BoFactory.getBoFactory().getDao(BoFactory.DaoTypes.CUSTOMER);
+
+    public void initialize() throws SQLException, ClassNotFoundException {
         tblCustomers.getColumns().get(0).setCellValueFactory(new PropertyValueFactory<>("id"));
         tblCustomers.getColumns().get(1).setCellValueFactory(new PropertyValueFactory<>("name"));
         tblCustomers.getColumns().get(2).setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -63,23 +67,16 @@ public class ManageCustomersFormController {
         loadAllCustomers();
     }
 
-    private void loadAllCustomers() {
+    private void loadAllCustomers() throws SQLException, ClassNotFoundException {
         tblCustomers.getItems().clear();
         /*Get all customers*/
-        try {
 
-            ArrayList<CustomerDTO> allCustomer=customerDAO.getAll();
+
+            ArrayList<CustomerDTO> allCustomer= customerBO.getAllCustomer();
             for (CustomerDTO c:allCustomer) {
                 tblCustomers.getItems().
                         add(new CustomerTM(c.getId(),c.getName(),c.getAddress()));
             }
-        } catch (SQLException e) {
-            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
-        } catch (ClassNotFoundException e) {
-            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
-        }
-
-
     }
 
     private void initUI() {
@@ -142,7 +139,7 @@ public class ManageCustomersFormController {
                     new Alert(Alert.AlertType.ERROR, id + " already exists").show();
                 }
                 CustomerDTO customerDTO=new CustomerDTO(id,name,address);
-                boolean isSaved =customerDAO.save(customerDTO);
+                boolean isSaved =customerBO.saveCustomer(customerDTO);
                 if (isSaved){
                     tblCustomers.getItems().add(new CustomerTM(id, name, address));
                 }
@@ -159,7 +156,7 @@ public class ManageCustomersFormController {
                 if (!existCustomer(id)) {
                     new Alert(Alert.AlertType.ERROR, "There is no such customer associated with the id " + id).show();
                 }
-                customerDAO.update(new CustomerDTO(id, name, address));
+                customerBO.updateCustomer(new CustomerDTO(id, name, address));
             } catch (SQLException e) {
                 new Alert(Alert.AlertType.ERROR, "Failed to update the customer " + id + e.getMessage()).show();
             } catch (ClassNotFoundException e) {
@@ -182,7 +179,7 @@ public class ManageCustomersFormController {
             if (!existCustomer(id)) {
                 new Alert(Alert.AlertType.ERROR, "There is no such customer associated with the id " + id).show();
             }
-            customerDAO.delete(id);
+            customerBO.deleteCustomer(id);
             tblCustomers.getItems().remove(tblCustomers.getSelectionModel().getSelectedItem());
             tblCustomers.getSelectionModel().clearSelection();
             initUI();
@@ -196,7 +193,7 @@ public class ManageCustomersFormController {
 
     private String generateNewId() {
         try {
-            return  customerDAO.generateNewId();
+            return  customerBO.generateNewCustomerId();
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Failed to generate a new id " + e.getMessage()).show();
         } catch (ClassNotFoundException e) {
@@ -214,7 +211,7 @@ public class ManageCustomersFormController {
 
     }
     public boolean existCustomer(String id) throws SQLException, ClassNotFoundException {
-        return customerDAO.exist(id);
+        return customerBO.existCustomer(id);
     }
     private String getLastCustomerId() {
         List<CustomerTM> tempCustomersList = new ArrayList<>(tblCustomers.getItems());
