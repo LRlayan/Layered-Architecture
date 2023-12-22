@@ -1,10 +1,9 @@
-package com.example.layeredarchitecture.dao;
+package lk.ijse.layeredarchitecture.dao;
 
-import com.example.layeredarchitecture.db.DBConnection;
+import lk.ijse.layeredarchitecture.db.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SQLUtil {
