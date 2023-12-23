@@ -3,7 +3,6 @@ package lk.ijse.layeredarchitecture.dao.custom.impl;
 import lk.ijse.layeredarchitecture.dao.SQLUtil;
 import lk.ijse.layeredarchitecture.dao.custom.OrderDetailDAO;
 import lk.ijse.layeredarchitecture.entity.OrderDetail;
-import lk.ijse.layeredarchitecture.model.OrderDetailDTO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
