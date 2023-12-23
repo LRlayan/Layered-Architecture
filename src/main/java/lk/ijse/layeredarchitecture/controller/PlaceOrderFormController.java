@@ -113,7 +113,7 @@ public class PlaceOrderFormController {
                             new Alert(Alert.AlertType.ERROR, "There is no such customer associated with the id " + newValue + "").show();
                         }
                         //Search Customer
-                        Customer entity = placeOrderBO.searchCustomer(newValue + "");
+                        CustomerDTO entity = placeOrderBO.searchCustomer(newValue + "");
                         txtCustomerName.setText(entity.getName());
 
 
