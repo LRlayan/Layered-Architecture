@@ -3,7 +3,6 @@ package lk.ijse.layeredarchitecture.controller;
 import lk.ijse.layeredarchitecture.bo.custom.BoFactory;
 import lk.ijse.layeredarchitecture.bo.custom.PlaceOrderBo;
 import lk.ijse.layeredarchitecture.bo.custom.boImpl.PlaceOrderBoImpl;
-import lk.ijse.layeredarchitecture.entity.Customer;
 import lk.ijse.layeredarchitecture.model.CustomerDTO;
 import lk.ijse.layeredarchitecture.model.ItemDTO;
 import lk.ijse.layeredarchitecture.model.OrderDetailDTO;
