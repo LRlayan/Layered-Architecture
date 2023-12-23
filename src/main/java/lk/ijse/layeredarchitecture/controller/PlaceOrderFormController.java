@@ -1,5 +1,6 @@
 package lk.ijse.layeredarchitecture.controller;
 
+import lk.ijse.layeredarchitecture.bo.custom.BoFactory;
 import lk.ijse.layeredarchitecture.bo.custom.PlaceOrderBo;
 import lk.ijse.layeredarchitecture.bo.custom.boImpl.PlaceOrderBoImpl;
 import lk.ijse.layeredarchitecture.entity.Customer;
@@ -56,7 +57,7 @@ public class PlaceOrderFormController {
 //    CustomerDAO customerDAO = new CustomerDAOImpl();
 //    ItemDAO itemDAO = new ItemDAOImpl();
 
-    PlaceOrderBo placeOrderBO = new PlaceOrderBoImpl();
+    PlaceOrderBo placeOrderBO = (PlaceOrderBo) BoFactory.getBoFactory().getDao(BoFactory.DaoTypes.PLACE_ORDER);
 
     public void initialize() throws SQLException, ClassNotFoundException {
 
