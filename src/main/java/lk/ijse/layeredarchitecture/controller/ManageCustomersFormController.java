@@ -167,7 +167,6 @@ public class ManageCustomersFormController {
             selectedCustomer.setAddress(address);
             tblCustomers.refresh();
         }
-
         btnAddNewCustomer.fire();
     }
 
@@ -199,7 +198,6 @@ public class ManageCustomersFormController {
             e.printStackTrace();
         }
 
-
         if (tblCustomers.getItems().isEmpty()) {
             return "C00-001";
         } else {
@@ -207,8 +205,8 @@ public class ManageCustomersFormController {
             int newCustomerId = Integer.parseInt(id.replace("C", "")) + 1;
             return String.format("C00-%03d", newCustomerId);
         }
-
     }
+
     public boolean existCustomer(String id) throws SQLException, ClassNotFoundException {
         return customerBO.existCustomer(id);
     }
@@ -217,5 +215,4 @@ public class ManageCustomersFormController {
         Collections.sort(tempCustomersList);
         return tempCustomersList.get(tempCustomersList.size() - 1).getId();
     }
-
 }
