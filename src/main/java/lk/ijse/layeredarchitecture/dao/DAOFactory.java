@@ -17,6 +17,7 @@ public class DAOFactory {
 
     public enum DAOTypes{
         CUSTOMER,ITEM,ORDER,ORDER_DETAIL,QUERY
+
     }
 
     public SuperDao getDAO(DAOTypes daoTypes){

@@ -2,6 +2,7 @@ package lk.ijse.layeredarchitecture.dao.custom.impl;
 
 import lk.ijse.layeredarchitecture.dao.SQLUtil;
 import lk.ijse.layeredarchitecture.dao.custom.OrderDetailDAO;
+import lk.ijse.layeredarchitecture.entity.OrderDetail;
 import lk.ijse.layeredarchitecture.model.OrderDetailDTO;
 
 import java.sql.SQLException;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 
 public class OrderDetailDAOImpl implements OrderDetailDAO {
     @Override
-    public boolean save(OrderDetailDTO dto) throws SQLException, ClassNotFoundException {
+    public boolean save(OrderDetail dto) throws SQLException, ClassNotFoundException {
 //        Connection connection = DBConnection.getDbConnection().getConnection();
 //        PreparedStatement stm = connection.prepareStatement("INSERT INTO OrderDetails (oid, itemCode, unitPrice, qty) VALUES (?,?,?,?)");
 //        stm.setString(1, dto.getOid());

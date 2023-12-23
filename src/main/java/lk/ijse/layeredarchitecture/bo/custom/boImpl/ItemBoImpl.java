@@ -3,6 +3,7 @@ package lk.ijse.layeredarchitecture.bo.custom.boImpl;
 import lk.ijse.layeredarchitecture.bo.custom.ItemBO;
 import lk.ijse.layeredarchitecture.dao.DAOFactory;
 import lk.ijse.layeredarchitecture.dao.custom.ItemDAO;
+import lk.ijse.layeredarchitecture.entity.Item;
 import lk.ijse.layeredarchitecture.model.ItemDTO;
 
 import java.sql.SQLException;
@@ -14,7 +15,15 @@ public class ItemBoImpl implements ItemBO {
 
     @Override
     public ArrayList<ItemDTO> getAllItems() throws SQLException, ClassNotFoundException {
-        return itemDAO.getAll();
+
+       ArrayList<Item> item = itemDAO.getAll();
+       ArrayList<ItemDTO> getAllItem = new ArrayList<>();
+
+        for (Item items : item) {
+            getAllItem.add(new ItemDTO(items.getCode(),items.getDescription(),items.getUnitPrice(),items.getQtyOnHand()));
+        }
+
+        return getAllItem;
     }
 
     @Override
@@ -24,12 +33,12 @@ public class ItemBoImpl implements ItemBO {
 
     @Override
     public boolean saveItem(ItemDTO itemDTO) throws SQLException, ClassNotFoundException {
-        return itemDAO.save(itemDTO);
+        return itemDAO.save(new Item(itemDTO.getCode(),itemDTO.getDescription(),itemDTO.getUnitPrice(),itemDTO.getQtyOnHand()));
     }
 
     @Override
     public boolean updateItem(ItemDTO itemDTO) throws SQLException, ClassNotFoundException {
-        return itemDAO.update(itemDTO);
+        return itemDAO.update(new Item(itemDTO.getCode(),itemDTO.getDescription(),itemDTO.getUnitPrice(),itemDTO.getQtyOnHand()));
     }
 
     @Override
