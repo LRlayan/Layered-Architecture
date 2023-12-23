@@ -58,9 +58,7 @@ public class PlaceOrderFormController {
 
     PlaceOrderBo placeOrderBO = new PlaceOrderBoImpl();
 
-
     public void initialize() throws SQLException, ClassNotFoundException {
-
 
         tblOrderDetails.getColumns().get(0).setCellValueFactory(new PropertyValueFactory<>("code"));
         tblOrderDetails.getColumns().get(1).setCellValueFactory(new PropertyValueFactory<>("description"));
@@ -69,10 +67,8 @@ public class PlaceOrderFormController {
         tblOrderDetails.getColumns().get(4).setCellValueFactory(new PropertyValueFactory<>("total"));
         TableColumn<OrderDetailTM, Button> lastCol = (TableColumn<OrderDetailTM, Button>) tblOrderDetails.getColumns().get(5);
 
-
         lastCol.setCellValueFactory(param -> {
             Button btnDelete = new Button("Delete");
-
 
             btnDelete.setOnAction(event -> {
                 tblOrderDetails.getItems().remove(param.getValue());
@@ -81,10 +77,8 @@ public class PlaceOrderFormController {
                 enableOrDisablePlaceOrderButton();
             });
 
-
             return new ReadOnlyObjectWrapper<>(btnDelete);
         });
-
 
         orderId = generateNewOrderId();
         lblId.setText("Order ID: " + orderId);
@@ -102,7 +96,6 @@ public class PlaceOrderFormController {
         txtQty.setEditable(false);
         btnSave.setDisable(true);
 
-
         cmbCustomerId.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             enableOrDisablePlaceOrderButton();
             if (newValue != null) {
@@ -116,7 +109,6 @@ public class PlaceOrderFormController {
                         CustomerDTO entity = placeOrderBO.searchCustomer(newValue + "");
                         txtCustomerName.setText(entity.getName());
 
-
                     } catch (SQLException e) {
                         new Alert(Alert.AlertType.ERROR, "Failed to find the customer " + newValue + "" + e).show();
                     }
@@ -128,16 +120,11 @@ public class PlaceOrderFormController {
             }
         });
 
-
-
-
         cmbItemCode.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newItemCode) -> {
             txtQty.setEditable(newItemCode != null);
             btnSave.setDisable(newItemCode == null);
 
-
             if (newItemCode != null) {
-
 
                 /*Find Item*/
                 try {
@@ -145,27 +132,21 @@ public class PlaceOrderFormController {
 //                        throw new NotFoundException("There is no such item associated with the id " + code);
                     }
 
-
                     //Search Item
                     ItemDTO item = placeOrderBO.searchItem(newItemCode + "");
-
 
                     txtDescription.setText(item.getDescription());
                     txtUnitPrice.setText(item.getUnitPrice().setScale(2).toString());
 
-
 //                    txtQtyOnHand.setText(tblOrderDetails.getItems().stream().filter(detail-> detail.getCode().equals(item.getCode())).<Integer>map(detail-> item.getQtyOnHand() - detail.getQty()).findFirst().orElse(item.getQtyOnHand()) + "");
                     Optional<OrderDetailTM> optOrderDetail = tblOrderDetails.getItems().stream().filter(detail -> detail.getCode().equals(newItemCode)).findFirst();
                     txtQtyOnHand.setText((optOrderDetail.isPresent() ? item.getQtyOnHand() - optOrderDetail.get().getQty() : item.getQtyOnHand()) + "");
-
 
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-
-
             } else {
                 txtDescription.clear();
                 txtQty.clear();
@@ -174,9 +155,7 @@ public class PlaceOrderFormController {
             }
         });
 
-
         tblOrderDetails.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, selectedOrderDetail) -> {
-
 
             if (selectedOrderDetail != null) {
                 cmbItemCode.setDisable(true);
@@ -190,10 +169,7 @@ public class PlaceOrderFormController {
                 cmbItemCode.getSelectionModel().clearSelection();
                 txtQty.clear();
             }
-
-
         });
-
 
         loadAllCustomerIds();
         loadAllItemCodes();
@@ -211,6 +187,7 @@ public class PlaceOrderFormController {
 
 
     public String generateNewOrderId() {
+
         try {
             return placeOrderBO.generateNewId();
         } catch (SQLException e) {
@@ -239,14 +216,10 @@ public class PlaceOrderFormController {
     private void loadAllItemCodes() {
         try {
             /*Get all items*/
-
-
             ArrayList<ItemDTO> allItems = placeOrderBO.getAllItem();
             for (ItemDTO i : allItems) {
                 cmbItemCode.getItems().add(i.getCode());
             }
-
-
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
         } catch (ClassNotFoundException e) {
@@ -276,20 +249,16 @@ public class PlaceOrderFormController {
             return;
         }
 
-
         String itemCode = cmbItemCode.getSelectionModel().getSelectedItem();
         String description = txtDescription.getText();
         BigDecimal unitPrice = new BigDecimal(txtUnitPrice.getText()).setScale(2);
         int qty = Integer.parseInt(txtQty.getText());
         BigDecimal total = unitPrice.multiply(new BigDecimal(qty)).setScale(2);
 
-
         boolean exists = tblOrderDetails.getItems().stream().anyMatch(detail -> detail.getCode().equals(itemCode));
-
 
         if (exists) {
             OrderDetailTM orderDetailTM = tblOrderDetails.getItems().stream().filter(detail -> detail.getCode().equals(itemCode)).findFirst().get();
-
 
             if (btnSave.getText().equalsIgnoreCase("Update")) {
                 orderDetailTM.setQty(qty);
@@ -314,34 +283,28 @@ public class PlaceOrderFormController {
     private void calculateTotal() {
         BigDecimal total = new BigDecimal(0);
 
-
         for (OrderDetailTM detail : tblOrderDetails.getItems()) {
             total = total.add(detail.getTotal());
         }
         lblTotal.setText("Total: " + total);
     }
 
-
     private void enableOrDisablePlaceOrderButton() {
         btnPlaceOrder.setDisable(!(cmbCustomerId.getSelectionModel().getSelectedItem() != null && !tblOrderDetails.getItems().isEmpty()));
     }
 
-
     public void txtQty_OnAction(ActionEvent actionEvent) {
     }
-
 
     public void btnPlaceOrder_OnAction(ActionEvent actionEvent) {
         boolean b = saveOrder(orderId, LocalDate.now(), cmbCustomerId.getValue(),
                 tblOrderDetails.getItems().stream().map(tm -> new OrderDetailDTO(orderId,tm.getCode(), tm.getQty(), tm.getUnitPrice())).collect(Collectors.toList()));
-
 
         if (b) {
             new Alert(Alert.AlertType.INFORMATION, "Order has been placed successfully").show();
         } else {
             new Alert(Alert.AlertType.ERROR, "Order has not been placed successfully").show();
         }
-
 
         orderId = generateNewOrderId();
         lblId.setText("Order Id: " + orderId);
@@ -374,5 +337,4 @@ public class PlaceOrderFormController {
         stage.centerOnScreen();
         stage.show();
     }
-
 }
