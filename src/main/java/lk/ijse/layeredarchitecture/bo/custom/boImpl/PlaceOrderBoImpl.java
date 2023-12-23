@@ -9,6 +9,7 @@ import lk.ijse.layeredarchitecture.db.DBConnection;
 import lk.ijse.layeredarchitecture.entity.Customer;
 import lk.ijse.layeredarchitecture.entity.Item;
 import lk.ijse.layeredarchitecture.entity.Order;
+import lk.ijse.layeredarchitecture.entity.OrderDetail;
 import lk.ijse.layeredarchitecture.model.CustomerDTO;
 import lk.ijse.layeredarchitecture.model.ItemDTO;
 import lk.ijse.layeredarchitecture.model.OrderDetailDTO;
@@ -52,7 +53,7 @@ public class PlaceOrderBoImpl implements PlaceOrderBo {
         }
         // add data to the Order Details table
         for (OrderDetailDTO detail : orderDetails) {
-            boolean b3 = orderDetailsDAO.save(detail);
+            boolean b3 = orderDetailsDAO.save(new OrderDetail(detail.getOid(),detail.getItemCode(),detail.getQty(),detail.getUnitPrice()));
             if (!b3) {
                 connection.rollback();
                 connection.setAutoCommit(true);
@@ -73,60 +74,8 @@ public class PlaceOrderBoImpl implements PlaceOrderBo {
         connection.commit();
         connection.setAutoCommit(true);
         return true;
-
-        /*
-           OrderDAO orderDAO = (OrderDAO) DAOFactory.getDaoFactory().getDAO(DAOFactory.DAOTypes.ORDER);
-    OrderDetailsDAO orderDetailsDAO = (OrderDetailsDAO) DAOFactory.getDaoFactory().getDAO(DAOFactory.DAOTypes.ORDER_DETAIL);
-    ItemDAO itemDAO = (ItemDAO) DAOFactory.getDaoFactory().getDAO(DAOFactory.DAOTypes.ITEM);
-    CustomerDAO customerDAO = (CustomerDAO) DAOFactory.getDaoFactory().getDAO(DAOFactory.DAOTypes.CUSTOMER);
-
-    @Override
-    public Boolean placeOrder(String orderId, LocalDate orderDate, String customerId, List<OrderDetailDTO> orderDetails) throws SQLException, ClassNotFoundException {
-        Connection connection = null;
-
-            connection= DBConnection.getDbConnection().getConnection();
-            //Check order id already exist or not
-            boolean b1 = orderDAO.existOrder(orderId);
-            /if order id already exist/
-            if (b1) {
-                return false;
-            }
-
-            connection.setAutoCommit(false);
-            //Save the Order to the order table
-            boolean b2 = orderDAO.saveOrder(new Order(orderId, orderDate, customerId));
-            if (!b2) {
-                connection.rollback();
-                connection.setAutoCommit(true);
-                return false;
-            }
-            // add data to the Order Details table
-            for (OrderDetailDTO detail : orderDetails) {
-
-                boolean b3 = orderDetailsDAO.saveOrderDetails(new OrderDetail(detail.getOid(),detail.getItemCode(),detail.getQty(),detail.getUnitPrice()));
-                if (!b3) {
-                    connection.rollback();
-                    connection.setAutoCommit(true);
-                    return false;
-                }
-                //Search & Update Item
-                ItemDTO item = findItem(detail.getItemCode());
-                item.setQtyOnHand(item.getQtyOnHand() - detail.getQty());
-                //update item
-                boolean b = itemDAO.update(new Item(item.getCode(), item.getDescription(), item.getUnitPrice(), item.getQtyOnHand()));
-                if (!b) {
-                    connection.rollback();
-                    connection.setAutoCommit(true);
-                    return false;
-                }
-            }
-            connection.commit();
-            connection.setAutoCommit(true);
-            return true;
-
-         */
-
     }
+
     @Override
     public ItemDTO findItem(String code) {
         try {
@@ -152,6 +101,7 @@ public class PlaceOrderBoImpl implements PlaceOrderBo {
     public ItemDTO searchItem(String id) throws SQLException, ClassNotFoundException {
 
         Item item = itemDAO.search(id);
+
         return new ItemDTO(item.getCode(),item.getDescription(),item.getUnitPrice(),item.getQtyOnHand());
     }
 
