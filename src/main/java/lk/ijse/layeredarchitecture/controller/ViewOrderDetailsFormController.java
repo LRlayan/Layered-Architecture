@@ -51,7 +51,6 @@ public class ViewOrderDetailsFormController implements Initializable {
             throw new RuntimeException(e);
         }
         setCellValueFactory();
-
     }
 
     public void setCellValueFactory(){

@@ -176,16 +176,13 @@ public class PlaceOrderFormController {
         loadAllItemCodes();
     }
 
-
     private boolean existItem(String code) throws SQLException, ClassNotFoundException {
         return placeOrderBO.existItem(code);
     }
 
-
     boolean existCustomer(String id) throws SQLException, ClassNotFoundException {
         return placeOrderBO.existCustomer(id);
     }
-
 
     public String generateNewOrderId() {
 
@@ -199,7 +196,6 @@ public class PlaceOrderFormController {
         return "OID-001";
     }
 
-
     private void loadAllCustomerIds() {
         try {
             ArrayList<CustomerDTO> allCustomers = placeOrderBO.getAllCustomer();
@@ -212,7 +208,6 @@ public class PlaceOrderFormController {
             e.printStackTrace();
         }
     }
-
 
     private void loadAllItemCodes() {
         try {
@@ -228,7 +223,6 @@ public class PlaceOrderFormController {
         }
     }
 
-
     @FXML
     private void navigateToHome(MouseEvent event) throws IOException {
         URL resource = this.getClass().getResource("/lk/ijse/layeredarchitecture/main-form.fxml");
@@ -239,7 +233,6 @@ public class PlaceOrderFormController {
         primaryStage.centerOnScreen();
         Platform.runLater(() -> primaryStage.sizeToScene());
     }
-
 
     public void btnAdd_OnAction(ActionEvent actionEvent) {
         if (!txtQty.getText().matches("\\d+") || Integer.parseInt(txtQty.getText()) <= 0 ||
@@ -280,7 +273,6 @@ public class PlaceOrderFormController {
         enableOrDisablePlaceOrderButton();
     }
 
-
     private void calculateTotal() {
         BigDecimal total = new BigDecimal(0);
 
@@ -315,7 +307,6 @@ public class PlaceOrderFormController {
         txtQty.clear();
         calculateTotal();
     }
-
 
     public boolean saveOrder(String orderId, LocalDate orderDate, String customerId, List<OrderDetailDTO> orderDetails) {
 

@@ -65,7 +65,6 @@ public class ManageItemsFormController {
                 txtQtyOnHand.setDisable(false);
             }
         });
-
         txtQtyOnHand.setOnAction(event -> btnSave.fire());
         loadAllItems();
     }
@@ -78,7 +77,6 @@ public class ManageItemsFormController {
             ArrayList<ItemDTO> getAllItems = itemBO.getAllItems();
             for (ItemDTO dto:getAllItems){
                 tblItems.getItems().add(new ItemTM(dto.getCode(),dto.getDescription(),dto.getUnitPrice(),dto.getQtyOnHand()));
-
             }
 
         } catch (SQLException e) {
@@ -171,7 +169,6 @@ public class ManageItemsFormController {
 
         int qtyOnHand = Integer.parseInt(txtQtyOnHand.getText());
         BigDecimal unitPrice = new BigDecimal(txtUnitPrice.getText()).setScale(2);
-
 
         if (btnSave.getText().equalsIgnoreCase("save")) {
             try {
